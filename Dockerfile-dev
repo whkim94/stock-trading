@@ -1,5 +1,9 @@
 FROM python:3.9-slim
 
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
 WORKDIR /app
 
 RUN pip3 install --upgrade pip
