@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  stock_trader:
+    image: stock_trader
+    build:
+      context: .
+      dockerfile: ./Dockerfile-dev
+    command: python3 stock_trader.py
+    volumes:
+      - ./src:/app
+    # ports:
+    #   - 8000:8000 
+    env_file:
+      - ./environment/.dev
