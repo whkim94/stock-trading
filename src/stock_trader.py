@@ -9,7 +9,7 @@ API_SECRET = os.getenv('APCA_API_SECRET_KEY')
 BASE_URL = os.getenv('APCA_API_BASE_URL')
 api = REST(API_KEY, API_SECRET, base_url=BASE_URL, api_version='v2')
 
-symbol = 'BTC/USD'
+symbol = 'AAPL'
 quantity = 1
 timeframe = TimeFrame.Minute
 short_window = 500
@@ -103,9 +103,15 @@ def execute_trade(symbol, stock_data):
         )
 
 def print_daily_stats():
-    portfolio = api.get_portfolio_history(period='1D', timeframe='1D')
-    profit = portfolio.profit_loss.iloc[-1]
-    print(f"Today's profit/loss: {profit}")
+    portfolio_history = api.get_portfolio_history(period='1D', timeframe='1D')
+    equity_data = portfolio_history.equity
+    profit_loss_data = portfolio_history.profit_loss
+    equity = equity_data[-1]
+    profit_loss = profit_loss_data[-1]
+    daily_profit_percentage = (profit_loss / equity) * 100
+
+    print(f"Daily Profit/Loss: ${profit_loss:.2f}")
+    print(f"Daily Profit/Loss Percentage: {daily_profit_percentage:.2f}%")
 
     # You can add more stats here, such as:
     # - Total portfolio value
@@ -117,6 +123,7 @@ if __name__ == '__main__':
 
     while True:
         try:
+            print(f"Run Time: {datetime.now()}")
             if is_market_open():
                 if trading_paused_until and datetime.now() < trading_paused_until:
                     print("Trading paused")
@@ -135,6 +142,6 @@ if __name__ == '__main__':
                 continue
 
         except Exception as e:
-            print(f"Error occurred: {e}")
+            print(f"Error occurred: {e} - {datetime.now()}")
             
         time.sleep(interval)
